@@ -1,0 +1,172 @@
+openapi: 3.0.1
+info:
+  title: StarTrackingFeeder
+  version: v1
+servers:
+- url: /
+paths:
+  /notification:
+    post:
+      tags:
+      - StarTrackingFeeder
+      operationId: notificationStarTracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventNotifier'
+        required: true
+      responses:
+        "204":
+          description: Success
+        "400":
+          description: Bad Request
+      x-swagger-router-controller: StarTrackingFeeder
+components:
+  schemas:
+    EventNotifier:
+      required:
+      - AgentCass
+      - AgentCode
+      - AgentStation
+      - AirWaybillNumber
+      - AirWaybillPrefix
+      - AirportOfDestination
+      - AirportOfOrigin
+      - Event
+      - EventStatus
+      - ForwarderIdentifier
+      - IdMessage
+      - isRM
+      - Type
+      type: object
+      properties:
+        IdMessage:
+          type: string
+          description: Correlation Id
+        AirWaybillPrefix:
+          pattern: "^[\\d]{3}$"
+          type: string
+          description: Self Explanatory
+        AirWaybillNumber:
+          pattern: "^[0-9]{8}$"
+          type: string
+          description: Self Explanatory
+        AirportOfOrigin:
+          pattern: "^[A-Z]{3}$"
+          type: string
+          description: Airport of Origin
+        AirportOfDestination:
+          pattern: "^[A-Z]{3}$"
+          type: string
+          description: Airport of Destination
+        TotalShipmentPieces:
+          type: integer
+          description: Shipment Total Pieces
+          format: int32
+          nullable: true
+        ForwarderIdentifier:
+          pattern: "^[A-Z]{9}$"
+          type: string
+          description: Unique Forwarder Identifier
+        AgentCode:
+          pattern: "^[\\d]{7}$"
+          type: string
+          description: Self Explanatory
+        AgentCass:
+          pattern: "^[\\d]{4}$"
+          type: string
+          description: Self Explanatory
+        AgentStation:
+          pattern: "^[A-Z]{3}$"
+          type: string
+          description: Specific Company Branch Location
+        Event:
+          type: string
+          description: Milestone Notification
+          enum:
+          - FWB
+          - LAT
+          - RCS
+          - DEP
+          - ARR
+          - RCF
+          - AWR
+          - AWD
+          - NFD
+          - DLV
+          - TAV
+          - CAN
+          - RMP
+        EventStatus:
+          type: string
+          description: Event Status
+          enum:
+          - Update
+          - Replan
+          - Creation
+        MilestoneReportedLocalTimeStamp:
+          type: string
+          description: Milestone Reported Local Time
+          format: date-time
+          nullable: true
+        MilestoneReportedUtcTimeStamp:
+          type: string
+          description: Milestone Reported Utc Time
+          format: date-time
+          nullable: true
+        PlannedLocalTimeStamp:
+          type: string
+          description: "Milestone Planned Local Time, for delayed notification only"
+          format: date-time
+          nullable: true
+        PlannedUtcTimeStamp:
+          type: string
+          description: "Milestone Planned Utc Time, for delayed notification only"
+          format: date-time
+          nullable: true
+        AirportOfEvent:
+          pattern: "^[A-Z]{3}$"
+          type: string
+          description: Airport of Event
+          nullable: true
+        CarrierCode:
+          pattern: "^[A-Z0-9]{2}$"
+          type: string
+          description: Carrier Code
+          nullable: true
+        FlightNumber:
+          pattern: "^[0-9]{1,4}[A-Z]{0,1}$"
+          type: string
+          nullable: true
+        PiecesReported:
+          type: integer
+          description: Event Reported Pieces
+          format: int32
+          nullable: true
+        WeightReported:
+          type: number
+          description: Event reported weight
+          format: double
+          nullable: true
+        WeightCode:
+          type: string
+          description: Possible value K/L
+          nullable: true
+        isRM:
+          type: boolean
+          description: True if Ciq Routemap (false if Simple Routemap)
+        TavGap:
+          type: integer
+          description: Time of availability variation value (minutes)
+          format: int32
+          nullable: true
+        Type:
+          type: string
+          description: Alert Notification Type
+          enum:
+          - ProActive
+          - Missed
+          - Event
+      additionalProperties: false
+      description: ""
